@@ -1,4 +1,9 @@
-# Serhant GPT Frontend Docs Intro
+---
+slug: /
+sidebar_position: 1
+---
+
+# Intro
 
 ## Application Overview
 
@@ -55,11 +60,6 @@ The application's **linting and code formatting** are configured using **ESLint*
 ## Development and Tooling
 
 To streamline development and improve team collaboration, the application utilizes various **development tools** such as **Husky** for pre-commit hooks, **Lint-staged** for linting before commit, and **Firebase tools** for managing backend services.
-
-## React Styleguidist
-
-**React Styleguidist** is employed to generate component documentation, facilitating better understanding and usage of the application's components.
-
 ## Overview Summary
 
 In conclusion, our **React application** is equipped with a diverse set of dependencies and tools, empowering developers to build a robust and user-friendly web application. With a focus on *performance*, *maintainability*, and *UI consistency*, the app aims to deliver a seamless and delightful experience for its users.

@@ -1,4 +1,4 @@
-## Setting up the Project
+# Setting up the Project
 
 ### Step 1: Clone the Repository
 
