@@ -12,8 +12,10 @@ All pages have dynamic imports for lazy loading and making the application faste
 const MainPageProviderLazy = lazy(() => import('./pages/MainPage/MainPageProvider'));
 const CreateContentPageProviderLazy = lazy(() => import('./pages/CreateContentPage/CreateContentPageProvider'));
 const ChatPageProviderLazy = lazy(() => import('./pages/ChatPage/ChatPageProvider'));
-const LoginPageProviderLazy = lazy(() => import('./pages/LoginPage/LoginPageProvider'));
+const LoginPageLazy = lazy(() => import('./pages/LoginPage/LoginPage'));
 const EditingPhotosPageProviderLazy = lazy(() => import('./pages/EditingPhotosPage/EditingPhotosPageProvider'));
+const ProfilePageProviderLazy = lazy(() => import('./pages/ProfilePage/ProfilePageProvider'));
+const ListingItemPageProviderLazy = lazy(() => import('./pages/ListingItemPage/ListingItemPageProvider'));
 ```
 
 ### QueryClient Configuration
@@ -42,48 +44,115 @@ React Query. Default options control query behavior, caching, and retries.
 
 ```jsx static
 const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route
-      path="/"
-      hasErrorBoundary={true}
-      errorElement={<MaintenancePage />}
-      defer
-      element={
-        <Suspense fallback={<Loader sx={{ height: 'calc(100vh)' }} />}>
-          <LayoutProvider />
-        </Suspense>
-      }
-    >
-      <Route
-        index
-        element={<MainPageProviderLazy />}
-      />
-      <Route
-        path="create/:id"
-        element={<CreateContentPageProviderLazy />}
-      />
-      <Route
-        path="login"
-        element={<LoginPageProviderLazy />}
-      />
-      <Route
-        path="editing"
-        element={<EditingPhotosPageProviderLazy />}
-      />
-      <Route
-        path="chat/:id"
-        element={<ChatPageProviderLazy />}
-      />
-      <Route
-        path="chat/"
-        element={<ChatPageProviderLazy />}
-      />
-      <Route
-        path="*"
-        element={<NotFoundPage />}
-      />
-    </Route>,
-  ),
+    createRoutesFromElements(
+        <Route
+            path="/"
+            hasErrorBoundary={true}
+            errorElement={<MaintenancePage />}
+            defer
+            element={
+                <Suspense
+                    fallback={
+                        <Loader
+                            sx={{ height: 'calc(100vh)' }}
+                            disableShrink={true}
+                        />
+                    }
+                >
+                    <LayoutProvider>
+                        <Layout />
+                    </LayoutProvider>
+                </Suspense>
+            }
+        >
+            <Route
+                index
+                element={
+                    <MainPageProviderLazy>
+                        <MainPage />
+                    </MainPageProviderLazy>
+                }
+            />
+            <Route
+                path="create/:id"
+                element={
+                    <CreateContentPageProviderLazy>
+                        <CreateContentPage />
+                    </CreateContentPageProviderLazy>
+                }
+            />
+            <Route
+                path="login"
+                element={<LoginPageLazy />}
+            />
+            <Route
+                path="editing"
+                element={
+                    <EditingPhotosPageProviderLazy>
+                        <EditingPhotosPage />
+                    </EditingPhotosPageProviderLazy>
+                }
+            />
+            <Route
+                path="listing/:id"
+                element={
+                    <ListingItemPageProviderLazy>
+                        <ListingItemPageRouteProvider />
+                    </ListingItemPageProviderLazy>
+                }
+            />
+            <Route
+                path="chat/:id"
+                element={
+                    <ChatPageProviderLazy>
+                        <ChatPage />
+                    </ChatPageProviderLazy>
+                }
+            />
+            <Route
+                path="chat/"
+                element={
+                    <ChatPageProviderLazy>
+                        <ChatPage />
+                    </ChatPageProviderLazy>
+                }
+            />
+            w
+            <Route
+                path="profile/"
+                element={
+                    <ProfilePageProviderLazy>
+                        <ProfilePage />
+                    </ProfilePageProviderLazy>
+                }
+            >
+                <Route
+                    index
+                    element={<ProfileListings />}
+                />
+                <Route
+                    path="images/"
+                    element={<ProfileGeneratedImages />}
+                />
+                <Route
+                    path="chats/"
+                    element={<ProfileChats />}
+                />
+                <Route
+                    path="listing/:id"
+                    element={<ProfileListingOutletProvider />}
+                />
+                <Route
+                    path="filters/"
+                    element={<ProfileSavedFilters />}
+                />
+            </Route>
+            <Route
+                path="*"
+                element={<NotFoundPage />}
+            />
+        </Route>,
+    ),
 );
 ```
 

@@ -5,7 +5,8 @@ to achieve its functionality.
 
 ### Statics:
 
-- `user` and `UID`: These static variables are extracted from the `auth` object to get the current user's information
+- `user` and `UID`: These static variables are extracted from the `useAuthorization ` hook provider to get the current
+  user's information
   and unique identifier (`UID`).
 
 ### Hooks:
@@ -23,8 +24,9 @@ to achieve its functionality.
 
 - `useFavoriteListings`: This custom hook is used to fetch the user's favorite listings based on their `UID`.
 
-- `useQuery`: This hook is from the `react-query` library and is used to fetch data asynchronously with caching and
-  invalidation.
+- Other custom hooks such
+  as `useHandleDetailedListingItem`, `useGetImagesPresets`, `useGetChatThreads`, `useGetAllListings`,
+  and `useGetGeneratedImages` are used to manage specific aspects of the profile page.
 
 ### Effects:
 
@@ -32,8 +34,8 @@ to achieve its functionality.
 
 ```jsx static
 useEffect(() => {
-  const favoriteListings = allListings?.filter((listing) => (favoriteListingsIds || []).includes(listing.Id));
-  setFavoriteListings(favoriteListings || []);
+    const favoriteListings = allListings?.filter((listing) => (favoriteListingsIds || []).includes(listing.Id));
+    setFavoriteListings(favoriteListings || []);
 }, [allListings, UID, favoriteListingsIds]);
 ```
 
@@ -46,167 +48,6 @@ the unique IDs of the user's favorite listings. The filtered list is then set as
 - `allListings`: An array of all available listings.
 - `UID`: The unique identifier of the user.
 - `favoriteListingsIds`: An array of unique IDs representing the user's favorite listings.
-
-#### `useEffect` for Loading Initial Chat Threads List
-
-```jsx static
-useEffect(() => {
-  if (chatThreads.length === 0) {
-    ChatAPI.getChats(UID).then((chats) => {
-      setChatThreads(chats || []);
-    });
-  }
-
-  const chatThreadsRef = ref(db, `chatHistory/${UID}/`);
-  const onDataChange = (snapshot) => {
-    const data = snapshot.val();
-    const chatThreads = Object.values(data || {});
-
-    setChatThreads(chatThreads || []);
-    setChatThreadsIsLoading(false);
-  };
-
-  onValue(chatThreadsRef, onDataChange);
-
-  return () => {
-    off(chatThreadsRef, onDataChange);
-  };
-}, [UID, setChatThreads, setChatThreadsIsLoading]);
-```
-
-**Purpose:** This effect serves multiple purposes related to chat threads. It initially checks if `chatThreads` is empty
-and, if so, fetches chat data using `ChatAPI.getChats(UID)`. It also sets up a real-time listener for changes in chat
-data stored in Firebase using `onValue`. When chat data changes, the listener updates the `chatThreads` state and
-indicates that loading is complete by setting `setChatThreadsIsLoading` to `false`.
-
-**Dependencies:**
-
-- `UID`: The unique identifier of the user.
-- `setChatThreads`: A function to set the chat threads.
-- `setChatThreadsIsLoading`: A function to indicate whether chat threads are still loading.
-
-#### `useEffect` for Managing Presets
-
-```jsx static
-useEffect(() => {
-  if (!presets?.length) {
-    EditingImagesAPI.getPresets(UID).then((presets) => {
-      setPresets(presets || []);
-    });
-  }
-
-  const presetsRef = ref(db, `presets/${UID}/`);
-  const onDataChange = (snapshot) => {
-    const data = snapshot.val();
-    const newPresets = Object.values(data || {});
-
-    setPresets(newPresets || []);
-    setPresetsIsLoading(false);
-  };
-
-  onValue(presetsRef, onDataChange);
-
-  return () => {
-    off(presetsRef, onDataChange);
-  };
-}, [UID, setPresets, setPresetsIsLoading]);
-```
-
-**Purpose:** This effect manages user presets for image editing. It checks if `presets` is empty and, if so, fetches
-presets data using `EditingImagesAPI.getPresets(UID)`. It also sets up a real-time listener for changes in preset data
-stored in Firebase. When preset data changes, the listener updates the `presets` state and indicates that loading is
-complete by setting `setPresetsIsLoading` to `false`.
-
-**Dependencies:**
-
-- `UID`: The unique identifier of the user.
-- `setPresets`: A function to set the user's presets.
-- `setPresetsIsLoading`: A function to indicate whether presets are still loading.
-
-#### `useEffect` for Managing Generated Images
-
-```jsx static
-useEffect(() => {
-  if (!generatedImages?.length) {
-    EditingImagesAPI.getGeneratedImages(UID).then((generatedImages) => {
-      setGeneratedImages(generatedImages || []);
-    });
-  }
-
-  const generatedImagesRef = ref(db, `generatedImages/${UID}/`);
-  const onDataChange = (snapshot) => {
-    const data = snapshot.val();
-    const newGeneratedImages = Object.values(data || {});
-
-    setGeneratedImages(newGeneratedImages || []);
-    setGeneratedImagesIsLoading(false);
-  };
-
-  onValue(generatedImagesRef, onDataChange);
-
-  return () => {
-    off(generatedImagesRef, onDataChange);
-  };
-}, [UID, setGeneratedImages, setGeneratedImagesIsLoading]);
-```
-
-**Purpose:** This effect manages generated images associated with the user. It checks if `generatedImages` is empty and,
-if so, fetches generated image data using `EditingImagesAPI.getGeneratedImages(UID)`. It also sets up a real-time
-listener for changes in generated image data stored in Firebase. When generated image data changes, the listener updates
-the `generatedImages` state and indicates that loading is complete by setting `setGeneratedImagesIsLoading` to `false`.
-
-**Dependencies:**
-
-- `UID`: The unique identifier of the user.
-- `setGeneratedImages`: A function to set the user's generated images.
-- `setGeneratedImagesIsLoading`: A function to indicate whether generated images are still loading.
-
-#### `useEffect` for Managing Active Listing
-
-```jsx static
-useEffect(() => {
-  if (id) {
-    const currentActiveListing = allListings?.find((listing) => listing.Id === id);
-
-    if (!currentActiveListing) {
-      setActiveListing(null);
-      return;
-    }
-
-    if (id !== currentActiveListing.Id) {
-      setActiveListing(null);
-      return;
-    }
-
-    const activeListingsWithFilteredMedia =
-      currentActiveListing?.Media?.length > 1
-        ? {
-          isLiked: favoriteListingsIds.includes(currentActiveListing.Id),
-          ...currentActiveListing,
-          ...(currentActiveListing && { Media: currentActiveListing?.Media.slice(1, 6) }),
-        }
-        : {
-          isLiked: favoriteListingsIds.includes(currentActiveListing.Id),
-          ...currentActiveListing,
-          ...(currentActiveListing && { Media: currentActiveListing?.Media }),
-        };
-    setActiveListing(activeListingsWithFilteredMedia);
-  }
-}, [id, allListings, favoriteListingsIds]);
-```
-
-**Purpose:** This effect is responsible for managing the active listing based on the provided `id`. It first attempts to
-find the listing with the given `id` within the `allListings` array. If found, it filters the listing's media to include
-only a subset of it, updating the `activeListing` state with additional information like whether it's liked (`isLiked`).
-If the listing is not found or the `id` doesn't match the listing's `Id`, it sets the `activeListing` to `null`.
-
-**Dependencies:**
-
-- `id`: The ID of the currently active listing.
-- `allListings`: An array of all available listings.
-- `favoriteListingsIds`: An array of unique IDs representing the user's favorite listings.
-
-These `useEffect` hooks collectively manage various aspects of the user's profile data
 
 ### Handlers:
 

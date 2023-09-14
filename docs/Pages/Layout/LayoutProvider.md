@@ -4,19 +4,14 @@ functions related to the layout and application state.
 ### Imports
 
 ```jsx static
-import Layout from './Layout';
 import AuthorizationLayer from '../AuthorizationLayer/AuthorizationLayer';
 import { createContext, useContext, useMemo, useState } from 'react';
 import useScreenSize from '../../hooks/useScreenSize/useScreenSize';
 import { memo } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useQuery } from '@tanstack/react-query';
-import { getFilterOptionsBody } from '../../utils/listing/getPropertyTypesForFilter';
-import RoomsAPI from '../../services/roomsAPI';
 ```
 
-- `Layout`: The main layout component of the application.
 - `AuthorizationLayer`: A component for handling user authorization and authentication.
 - `createContext`: A function to create a new context.
 - `useContext`: A hook to access the context.
@@ -25,9 +20,6 @@ import RoomsAPI from '../../services/roomsAPI';
 - `useScreenSize`: A custom hook to track the current screen size.
 - `memo`: A function to memoize a component for performance optimization.
 - `ToastContainer`: A component for displaying toast notifications.
-- `useQuery`: A hook from the `react-query` library for making queries and caching data.
-- `getFilterOptionsBody`: A function to generate filter options for listing properties.
-- `RoomsAPI`: A service module for interacting with room-related API endpoints.
 
 ### AppContextProvider Context
 
@@ -72,21 +64,11 @@ const [filterOptions, setFilterOptions] = useState(null);
 - `filterOptions`: A state to hold filter options data.
 - `setFilterOptions`: A function to set the filter options data.
 
-#### useQuery Hook
+#### useGetAllListings Hook
+Make initial value of all listings during authorization checking to show users listings faster
 
 ```jsx static
-useQuery({
-	queryKey: ['getListingsRooms', { filterOptions: null, regions: null }],
-	queryFn: async () => {
-		const filterOptions = getFilterOptionsBody(null);
-
-		const body = {
-			filterOptions,
-			regionsSelected: [],
-		};
-		return RoomsAPI.getRoomsPost(body);
-	},
-});
+useGetAllListings();
 ```
 
 - The `useQuery` hook is used to fetch room data based on certain query conditions.

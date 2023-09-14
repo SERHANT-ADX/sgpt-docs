@@ -7,6 +7,24 @@ A context used to provide data and functions related to the chat page to its chi
 A provider component that wraps the ChatPage component and provides context data and functions related to the chat
 functionality.
 
+#### Hooks 
+
+**useAuthorization()** - get authorization data of a user
+```js static
+const { photoURL: profilePhoto, UID } = useAuthorization();
+```
+
+**useGetChatThreads()** - fetch and real-time update chat threads 
+```jsx static
+useGetChatThreads({
+    chatThreads,
+    setChatThreads,
+    setChatThreadsIsLoading,
+    UID,
+    depsList: [id, UID, activeChatThread?.chatString?.length],
+});
+```
+
 #### **Methods**
 
 #### `scrollChatToBottom()`
@@ -46,30 +64,14 @@ Handles sending a user message in the chat, triggers AI response, and updates th
 Generates an AI response based on the current chat context and updates the chat thread.
 
 ### **useChatPage()**
-
 A custom hook that allows components to access the context data and functions related to the chat page.
 
 ### **ChatPage (Component)**
-
 A component that displays the chat page interface.
 
 ### **useQueryActions (Custom hook)**
-
 A utility custom hook that provides mutation functions for various API requests.
 
-### **Methods**
-
-#### `getListingsRooms()`
-
-Fetches room listings.
-
-#### `createSocialPost()`
-
-Creates a social media post.
-
-#### `makeChatRequest()`
-
-Sends a chat request.
 
 ### **Detailed Explanation of Effects**
 
@@ -92,26 +94,6 @@ If the chat thread exists, it updates the activeChatThread state with the fetche
 
 Finally, the effect sets the `isLoadingChatThread` state to `false`, indicating that the chat thread loading is
 complete.
-
-### Loading Initial Chat Threads List
-
-This effect fetches the initial list of chat threads for the user and sets up a Realtime Database listener to keep the
-chat threads list updated in real-time.
-
-#### Description:
-
-If the list of chat threads (`chatThreads`) is empty, the effect fetches the list of chat threads using
-the `ChatAPI.getChats` function with the user's `UID`.
-After fetching the chat threads, the effect creates a reference to the chat threads in the Firebase Realtime Database
-using the user's `UID`.
-
-It then defines an `onDataChange` function that updates the `chatThreads` state with the new chat threads data whenever
-the data in the database changes.
-The effect uses the `onValue` function from Firebase to subscribe to changes in the chat threads data and call
-the `onDataChange` function accordingly.
-
-To ensure proper cleanup, the effect returns a cleanup function that `unsubscribes` the effect from the chat threads
-data changes using the off function from Firebase.
 
 ### Auto-scrolling Chat Messages
 

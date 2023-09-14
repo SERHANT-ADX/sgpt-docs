@@ -19,9 +19,12 @@ The `ProfileChats` component relies on the following dependencies:
 
 ### Props
 
-The `ProfileChats` component does not accept any props directly. Instead, it relies on the `chatThreads` data obtained
+The `ProfileChats` component does not accept any props directly. Instead, it relies on the `chatThreads` and `chatThreadsIsLoading` data obtained
 from the `useProfilePage` hook to render the list of chat threads.
 
+`chatThreads` - array of chat objects
+
+`chatThreadsIsLoading` - boolean
 ### Component Structure
 
 The `ProfileChats` component is structured as follows:
@@ -56,7 +59,7 @@ To use the `ProfileChats` component, follow these steps:
    ```jsx static
    import ProfileChats from './ProfileChats';
    ```
-
+ 
 2. Include the `ProfileChats` component within your application's UI, typically within the user's profile page or any
    route where chat threads should be displayed.
 

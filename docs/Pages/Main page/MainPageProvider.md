@@ -4,17 +4,20 @@ encapsulates the logic for fetching and handling listings data, managing filters
 ### Imports
 
 ```jsx static
-import React, {createContext, memo, useContext, useMemo} from 'react';
-import MainPage from './MainPage';
+import React, { createContext, memo, useCallback, useContext, useMemo } from 'react';
 import useHandleListings from '../../hooks/useHandleListings/useHandleListings';
-import {useAppProvider} from '../Layout/LayoutProvider';
+import { useAppProvider } from '../Layout/LayoutProvider';
+import { makeFilterChipsList } from '../../utils/listing/makeFilterChipsList';
+import useFavoriteListings from '../../hooks/useFavoriteListings/useFavoriteListings';
+import { useDocumentTitle } from 'usehooks-ts';
+import { useAuthorization } from '../AuthorizationLayer/AuthorizationLayer';
 ```
 
-- `createContext`: Creates a context for sharing data.
-- `memo`: Memoizes the component for performance optimization.
-- `MainPage`: The component that consumes the context provided by `MainPageProvider`.
 - `useHandleListings`: A custom hook for fetching and handling listings data.
 - `useAppProvider`: A custom hook for accessing application-level context from `LayoutProvider`.
+- `useDocumentTitle`: Changes document title when component is rendered.
+- `useAuthorization`: Get auth data.
+- `useFavoriteListings`: Get user's favorite listings.
 
 ### MainPageContext
 
@@ -81,23 +84,20 @@ const MainPageProvider = () => {
 	);
 	//@@viewOff:context
 
-	return (
-		<MainPageContext.Provider value={contextValue}>
-			<MainPage />
-		</MainPageContext.Provider>
-	);
+    return <MainPageContext.Provider value={contextValue}>{children}</MainPageContext.Provider>;
+
 };
 ```
 
 - The `MainPageProvider` component encapsulates the logic for fetching and managing listings data and provides it to
-  the `MainPage` component through context.
+  the `children` component through context.
 - The component uses the `useAppProvider` hook to access context values and actions from the `LayoutProvider`.
 - The `useHandleListings` hook is used to fetch and handle listings data based on filter options, current page, regions,
   rooms, and various actions.
 - The `contextValue` object holds the data and actions that will be available to components consuming
   the `MainPageContext`.
 - The `useMemo` hook memoizes the `contextValue` to prevent unnecessary re-rendering.
-- The `MainPage` component is wrapped in the `MainPageContext.Provider` to provide the context data to its child
+- The `children` component is wrapped in the `MainPageContext.Provider` to provide the context data to its child
   components.
 
 ### useMainPageProvider Hook

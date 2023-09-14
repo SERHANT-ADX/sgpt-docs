@@ -7,7 +7,7 @@ A context used to provide data and functions related to the editing photos page 
 A provider component that wraps the EditingPhotosPage component and provides context data and functions related to the
 photo editing functionality.
 
-#### **Data and States**
+### **Data and States**
 
 - `isBasicMode`: A boolean state that determines whether the page is in basic mode or advanced mode for editing.
 - `itemForEditing`: The image or item being edited.
@@ -24,7 +24,7 @@ photo editing functionality.
 - `isGeneratingImage`: A boolean state indicating if an image is being generated.
 - `progress`: Progress value of image generation.
 
-#### **Methods and Functions**
+### **Methods and Functions**
 
 **`getImageToShow`**
 
@@ -172,8 +172,14 @@ handle various aspects of image editing, preset management, and user interaction
 experience.
 
 ### Effects
+**useAuthorization()** - provider hook that gives auth data
 
-### Effect for Resetting Generated Items
+```js static
+const { UID } = useAuthorization();
+```
+
+
+#### Effect for Resetting Generated Items
 
 **Functionality:**
 This effect is triggered whenever the `itemForEditing` state changes. If there is no image for editing (`itemForEditing`
@@ -190,30 +196,7 @@ their initial values.
 - `setIsItemGenerated`: A function to update the `isItemGenerated` state.
 - `setGeneratedItemsList`: A function to clear the `generatedItemsList` state.
 
-### Effect for Managing Presets
-
-**Functionality:**
-This effect is responsible for fetching and managing presets for image editing. It first checks if there are no existing
-presets, and if so, it retrieves them using the `EditingImagesAPI.getPresets` function. It also listens for changes to
-the presets in the Firebase Realtime Database and updates the state variables accordingly.
-
-**Purpose:**
-To fetch and manage presets for image editing, updating state variables based on the retrieved data and database
-changes.
-
-**Dependencies:**
-
-- `UID`: The user's unique identifier.
-- `setPresets`: A function to update the `presets` state.
-- `setPresetsIsLoading`: A function to update the `presetsIsLoading` state.
-- `presets`: The array of existing presets.
-- `EditingImagesAPI.getPresets`: A function to fetch presets from the API.
-- `ref`, `onValue`, `off`: Firebase Realtime Database functions for listening to data changes.
-
-**Cleanup:**
-The effect returns a cleanup function that removes the listener for database changes.
-
-### Effect for Managing Chosen Listings
+#### Effect for Managing Chosen Listings
 
 **Functionality:**
 This effect handles the retrieval and management of chosen listings for image editing suggestions. It fetches chosen
@@ -240,7 +223,7 @@ These three `useEffect` hooks work together to manage various aspects of the ima
 generated items are reset when the editing image changes, manage the presets available for editing, and fetch and manage
 chosen listings to provide suggestions for image editing.
 
-### useEditingPhotosPage()
+#### useEditingPhotosPage()
 
 A custom hook that allows components to access the context data and functions related to the editing photos page. It
 should be used within a component wrapped by `EditingPhotosPageProvider`.

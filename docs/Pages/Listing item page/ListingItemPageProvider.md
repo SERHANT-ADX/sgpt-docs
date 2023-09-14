@@ -2,36 +2,6 @@ The `ListingItemPageProvider` component serves as a data provider for the `Listi
 detailed information about a real estate listing. This provider component manages data fetching, state management, and
 user interactions related to the listing details.
 
-### Dependencies
-
-The `ListingItemPageProvider` component depends on several external modules and services, including:
-
-- **React Hooks (`useState`, `useEffect`, `useCallback`):** These React hooks are used for managing component-level
-  state and handling side effects.
-
-- **ProfileAPI:** This is a service module responsible for fetching and updating user-related data, such as liked
-  listings.
-
-- **useFavoriteListings:** A custom hook that provides functionality for retrieving a user's favorite listings.
-
-- **react-query:** A library for managing and caching asynchronous data fetching.
-
-- **getFilterOptionsBody:** A utility function that constructs filter options for listing queries.
-
-- **RoomsAPI:** A service module for fetching room and listing data.
-
-- **react-toastify:** A library for displaying toast notifications.
-
-- **useParams:** A React Router hook for accessing URL parameters.
-
-- **auth:** Firebase authentication module for accessing the current user's UID.
-
-- **useScreenSize:** A custom hook for determining the screen size (mobile or desktop).
-
-- **ListingItemPage:** The component that displays the detailed listing information.
-
-- **useDocumentTitle:** A custom hook for setting the document title dynamically.
-
 ### Hooks
 
 "Certainly, here are code examples from your component that demonstrate the usage of each:
@@ -79,8 +49,19 @@ useEffect(() => {
 }, [id, allListings, favoriteListingsIds]);
 ```
 
-In this `useEffect`, you're monitoring changes in `id`, `allListings`, and `favoriteListingsIds`. When `id` changes, it
-fetches the current listing from `allListings`, performs some filtering, and updates `activeListing` accordingly.
+### 5. `useGetAllListings` Custom Hook:
+Get all listings and handle loading
+
+```javascript static
+const { listingsIsLoading, allListings } = useGetAllListings();
+```
+
+### 6. `useHandleDetailedListingItem` Custom Hook:
+Get detailed listing property and merge with other data about this property. 
+
+```javascript static
+useHandleDetailedListingItem({ listingId: id, allListings, favoriteListingsIds, setActiveListing });
+```
 
 ### Data Flow
 
@@ -118,7 +99,7 @@ The `ListingItemPageProvider` component orchestrates the data flow and interacti
 
 ### Component Structure
 
-The `ListingItemPageProvider` component itself doesn't render any UI elements but serves as a data orchestrator and
+The `ListingItemPageProvider` component renders any `children` element and serves as a data orchestrator and
 state manager for the `ListingItemPage` component.
 
 ### Usage
